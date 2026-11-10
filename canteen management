@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canteen Management System - Rajalakshmi Engineering College</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fontawesome/6.4.0/css/all.min.css">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?
+family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;
+600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config = {
+theme: {
+extend: {
+fontFamily: {
+sans: ['Plus Jakarta Sans', 'sans-serif'],
+mono: ['JetBrains Mono', 'monospace'],
+},
+colors: {
+cyber: {
+50: '#ecfeff',
+400: '#22d3ee',
+500: '#06b6d4',
+600: '#0891b2',
+700: '#0e7490',
+900: '#164e63',
+},
+neon: {
+emerald: '#10b981',
+amber: '#f59e0b',
+rose: '#f43f5e',
+violet: '#8b5cf6'
+},
+dark: {
+950: '#060913',
+900: '#0b1120',
+850: '#0f172a',
+800: '#1e293b',
+700: '#334155'
+}
+}
+}
+}
+}
+</script>
+<style>
+.custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); border-radius:
+8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.4); borderradius: 8px; }
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(34, 211, 238, 0.7); }
+.code-block { font-family: 'JetBrains Mono', monospace; background: #060913; color:
+#38bdf8; }
+.glass-panel {
+background: rgba(15, 23, 42, 0.75);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.glass-card {
+background: rgba(30, 41, 59, 0.5);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.glow-cyber {
+box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.3);
+}
+.glow-emerald {
+box-shadow: 0 0 25px -5px rgba(16, 185, 129, 0.3);
+}
+.btn-futuristic {
+transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+position: relative;
+overflow: hidden;
+}
+.btn-futuristic::after {
+content: '';
+position: absolute;
+top: -50%;
+left: -50%;
+width: 200%;
+height: 200%;
+background: linear-gradient(60deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+transform: rotate(30deg);
+transition: 0.5s;
+opacity: 0;
+}
+.btn-futuristic:hover::after {
+opacity: 1;
+left: 100%;
+}
+</style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-200 bg-dark-950 antialiased
+selection:bg-cyber-500 selection:text-white">
+<!-- TOP HEADER / BRANDING BAR -->
+<header class="glass-panel sticky top-0 z-40 border-b border-white/10 shadow-2xl">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+<div class="flex items-center space-x-3.5 cursor-pointer group" onclick="navigateTo('login')">
+<div class="bg-gradient-to-tr from-cyber-600 via-cyber-500 to-indigo-500 p-3 rounded-2xl
+shadow-lg shadow-cyber-500/30 text-white flex items-center justify-center grouphover:scale-105 transition-transform">
+<i class="fa-solid fa-bolt text-lg"></i>
+</div>
+<div>
+<div class="flex items-center space-x-2">
+<span class="text-[10px] uppercase tracking-widest font-extrabold text-cyber-400 bg-cyber500/10 px-2.5 py-0.5 rounded-full border border-cyber-500/30">REC CANTEEN OS
+v3.0</span>
+</div>
+<h1 class="text-base font-extrabold tracking-wide text-white flex items-center gap-2 mt-0.5">
+<span class="bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate400">Canteen Management System</span>
+</h1>
+</div>
+</div>
+<!-- RIGHT HEADER USER SESSION BADGE -->
+<div class="flex items-center space-x-3">
+<div id="session-header-info" class="hidden items-center space-x-3 bg-dark-900/90 px-4 py2 rounded-2xl border border-white/10 text-xs shadow-inner">
+<div class="flex items-center space-x-2.5">
+<div class="w-6 h-6 rounded-full bg-cyber-500/20 text-cyber-400 flex items-center justifycenter font-bold text-[10px] border border-cyber-500/40">
+<i class="fa-solid fa-user"></i>
+</div>
+<span id="session-user-name" class="font-bold text-slate-100 tracking-wide">User</span>
+</div>
+<button onclick="logoutSession()" class="text-rose-400 hover:text-rose-300 font-bold
+transition-colors pl-3 border-l border-slate-700/80 text-[11px] flex items-center gap-1.5
+hover:scale-105">
+<i class="fa-solid fa-power-off text-rose-400"></i>
+<span class="hidden sm:inline">Logout</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- MAIN APP WRAPPER -->
+<main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col">
+<!-- PAGE 1: LOGIN PORTAL -->
+<div id="page-login" class="flex-1 flex items-center justify-center py-12">
+<div class="max-w-md w-full glass-panel rounded-3xl shadow-2xl border border-white/10 p-8
+space-y-7 relative overflow-hidden">
+<div class="absolute -top-24 -right-24 w-48 h-48 bg-cyber-500/10 rounded-full blur-3xl
+pointer-events-none"></div>
+<div class="text-center space-y-2 relative z-10">
+<div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-tr
+from-cyber-600 to-indigo-600 text-white text-2xl shadow-xl shadow-cyber-500/20 mb-2
+border border-white/20">
+<i class="fa-solid fa-shield-halved"></i>
+</div>
+<h2 class="text-2xl font-extrabold text-white tracking-tight">Rajalakshmi Campus Desk</h2>
+<p class="text-xs text-slate-400 font-medium">Select access level to proceed into system
+workflow.</p>
+</div>
+<!-- PORTAL SELECTOR TABS -->
+<div class="flex bg-dark-950 p-1.5 rounded-2xl border border-white/10 relative z-10">
+<button onclick="switchLoginTab('student')" id="login-tab-student"
+class="flex-1 py-3 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-cyber-600
+to-cyber-500 text-white shadow-lg shadow-cyber-500/20 flex items-center justify-center
+space-x-2">
+<i class="fa-solid fa-user-graduate"></i>
+<span>Student Portal</span>
+</button>
+<button onclick="switchLoginTab('management')" id="login-tab-management"
+class="flex-1 py-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white
+flex items-center justify-center space-x-2">
+<i class="fa-solid fa-user-gear"></i>
+<span>Staff / Desk</span>
+</button>
+</div>
+<!-- STUDENT LOGIN FORM -->
+<form id="form-login-student" onsubmit="handleStudentLogin(event)" class="space-y-4 pt-1
+relative z-10">
+<div id="student-login-error" class="hidden p-3.5 bg-rose-500/10 border border-rose500/30 rounded-2xl text-rose-400 text-xs text-center font-bold items-center justify-center
+gap-2">
+<i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+<span id="student-login-error-msg">Invalid login credentials.</span>
+</div>
+<div class="space-y-2">
+<label class="block text-[11px] font-bold text-cyber-400 uppercase tracking-widest">Student
+Institutional Email</label>
+<div class="relative">
+<i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+<input type="email" id="student-login-email" required placeholder="Enter student email"
+class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10
+focus:border-cyber-500 focus:ring-2 focus:ring-cyber-500/30 outline-none text-sm fontsemibold text-white placeholder-slate-600 transition-all">
+</div>
+</div>
+<button type="submit" class="btn-futuristic w-full bg-gradient-to-r from-cyber-600 viacyber-500 to-indigo-600 hover:from-cyber-500 hover:to-indigo-500 text-white fontextrabold py-4 px-4 rounded-2xl shadow-xl shadow-cyber-500/25 transition-all text-sm flex
+items-center justify-center space-x-2 active:scale-95 border border-white/20">
+<span>Authenticate Student</span>
+<i class="fa-solid fa-chevron-right text-xs"></i>
+</button>
+</form>
+<!-- MANAGEMENT LOGIN FORM -->
+<form id="form-login-management" onsubmit="handleManagementLogin(event)"
+class="space-y-4 pt-1 hidden relative z-10">
+<div class="space-y-2">
+<label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Staff
+Username</label>
+<div class="relative">
+<i class="fa-solid fa-user-lock absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+<input type="text" id="mgmt-username" value="admin" required placeholder="Username"
+class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10
+focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none text-sm fontsemibold text-white transition-all">
+</div>
+</div>
+<div class="space-y-2">
+<label class="block text-[11px] font-bold text-slate-400 uppercase tracking-widest">Security
+Access PIN</label>
+<div class="relative">
+<i class="fa-solid fa-key absolute left-4 top-3.5 text-slate-500 text-sm"></i>
+<input type="password" id="mgmt-password" value="1234" required placeholder="PIN
+(default: 1234)"
+class="w-full pl-11 pr-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10
+focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 outline-none text-sm fontsemibold text-white transition-all">
+</div>
+</div>
+<button type="submit" class="btn-futuristic w-full bg-gradient-to-r from-slate-800 via-slate700 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white font-extrabold py-4 px4 rounded-2xl shadow-xl transition-all text-sm flex items-center justify-center space-x-2
+active:scale-95 border border-white/10">
+<span>Access Management Desk</span>
+<i class="fa-solid fa-lock text-xs"></i>
+</button>
+</form>
+</div>
+</div>
+<!-- PAGE 2: STUDENT MENU & CART ORDERING -->
+<div id="page-student-menu" class="space-y-6 hidden flex-1 flex flex-col">
+<!-- PAGE HEADER BAR -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between glass-panel px-6 py-4
+rounded-3xl shadow-xl gap-4">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-2xl bg-cyber-500/10 border border-cyber-500/30 text-cyber400 flex items-center justify-center font-bold shadow-inner">
+<i class="fa-solid fa-utensils text-lg"></i>
+</div>
+<div>
+<h2 class="text-base font-extrabold text-white tracking-wide">Interactive Food
+Selection</h2>
+<p class="text-xs text-slate-400 font-medium">Add items, review stock limits, and generate a
+bill for cash counter payment.</p>
+</div>
+</div>
+<div class="flex items-center space-x-2 bg-dark-950/80 p-1.5 rounded-2xl border borderwhite/10">
+<button onclick="navigateTo('student-menu')" class="btn-futuristic px-4 py-2.5 rounded-xl
+text-xs font-extrabold transition-all bg-gradient-to-r from-cyber-600 to-cyber-500 text-white
+shadow-md shadow-cyber-500/20 flex items-center space-x-2">
+<i class="fa-solid fa-border-all"></i>
+<span>Menu Catalog</span>
+</button>
+<button onclick="navigateTo('student-history')" class="btn-futuristic px-4 py-2.5 rounded-xl
+text-xs font-extrabold transition-all text-slate-400 hover:text-white flex items-center space-x2">
+<i class="fa-solid fa-receipt"></i>
+<span>My History</span>
+</button>
+</div>
+</div>
+<!-- MAIN MENU & CART GRID -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+<!-- MENU LISTINGS -->
+<div class="lg:col-span-8 space-y-4">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 glass-panel p-4
+rounded-3xl">
+<div class="flex items-center space-x-2 overflow-x-auto custom-scrollbar pb-1 sm:pb-0"
+id="student-category-filters"></div>
+<span id="student-menu-count" class="text-xs font-mono font-bold text-cyber-400 bgcyber-500/10 border border-cyber-500/20 px-3.5 py-1 rounded-full whitespace-nowrap">0
+Items</span>
+</div>
+<div id="student-menu-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+</div>
+<!-- CART COLUMN -->
+<div class="lg:col-span-4">
+<div class="glass-panel rounded-3xl shadow-xl p-5 sticky top-24 flex flex-col max-h-[620px]
+border border-white/10">
+<div class="flex items-center justify-between pb-3.5 border-b border-white/10">
+<div class="flex items-center space-x-2">
+<i class="fa-solid fa-basket-shopping text-cyber-400 text-base"></i>
+<h3 class="font-extrabold text-white text-sm tracking-wide">Selected Items</h3>
+</div>
+<button onclick="clearStudentCart()" class="text-xs text-rose-400 font-bold hover:text-rose300 transition-colors">Clear Cart</button>
+</div>
+<!-- CART LIST -->
+<div id="student-cart-items" class="flex-1 overflow-y-auto py-3 space-y-3 custom-scrollbar">
+</div>
+<!-- CART FOOTER -->
+<div class="pt-4 border-t border-white/10 space-y-3">
+<div class="flex justify-between text-xs text-slate-400 font-medium">
+<span>Subtotal</span>
+<span id="student-cart-subtotal" class="font-mono font-bold text-slate-200">₹ 0.00</span>
+</div>
+<div class="flex justify-between text-white font-extrabold text-base border-t borderwhite/10 pt-2.5">
+<span>Total Amount</span>
+<span id="student-cart-total" class="font-mono text-cyber-400 text-xl font-bold">₹
+0.00</span>
+</div>
+<button id="btn-place-order" onclick="placeStudentOrder()" disabled
+class="btn-futuristic w-full bg-gradient-to-r from-cyber-600 via-cyber-500 to-indigo-600
+hover:from-cyber-500 hover:to-indigo-500 text-white font-extrabold py-4 px-4 rounded-2xl
+shadow-xl shadow-cyber-500/25 transition-all disabled:opacity-40 text-sm flex items-center
+justify-center space-x-2 border border-white/20 active:scale-95">
+<i class="fa-solid fa-file-invoice"></i>
+<span>Generate Bill Number</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- PAGE 3: STUDENT ORDER HISTORY -->
+<div id="page-student-history" class="space-y-6 hidden flex-1 flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between glass-panel px-6 py-4
+rounded-3xl shadow-xl gap-4">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-2xl bg-cyber-500/10 border border-cyber-500/30 text-cyber400 flex items-center justify-center font-bold shadow-inner">
+<i class="fa-solid fa-clock-rotate-left text-lg"></i>
+</div>
+<div>
+<h2 class="text-base font-extrabold text-white tracking-wide">My Order Bills & Receipts</h2>
+<p class="text-xs text-slate-400 font-medium">View live payment status and transaction
+confirmations.</p>
+</div>
+</div>
+<div class="flex items-center space-x-2 bg-dark-950/80 p-1.5 rounded-2xl border borderwhite/10">
+<button onclick="navigateTo('student-menu')" class="btn-futuristic px-4 py-2.5 rounded-xl
+text-xs font-extrabold transition-all text-slate-400 hover:text-white flex items-center space-x2">
+<i class="fa-solid fa-border-all"></i>
+<span>Menu Catalog</span>
+</button>
+<button onclick="navigateTo('student-history')" class="btn-futuristic px-4 py-2.5 rounded-xl
+text-xs font-extrabold transition-all bg-gradient-to-r from-cyber-600 to-cyber-500 text-white
+shadow-md shadow-cyber-500/20 flex items-center space-x-2">
+<i class="fa-solid fa-receipt"></i>
+<span>My History</span>
+</button>
+</div>
+</div>
+<div class="glass-panel rounded-3xl shadow-xl p-6 space-y-4">
+<div id="student-history-container" class="space-y-4"></div>
+</div>
+</div>
+<!-- PAGE 4: MANAGEMENT DESK & INVENTORY -->
+<div id="page-management" class="space-y-6 hidden flex-1 flex flex-col">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between glass-panel px-6 py-4
+rounded-3xl shadow-xl gap-4">
+<div class="flex items-center space-x-3">
+<div class="w-11 h-11 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 textindigo-400 flex items-center justify-center font-bold shadow-inner">
+<i class="fa-solid fa-cash-register text-lg"></i>
+</div>
+<div>
+<h2 class="text-base font-extrabold text-white tracking-wide">Canteen Cash Counter &
+Control</h2>
+<p class="text-xs text-slate-400 font-medium">Verify bill numbers, collect liquid cash, and
+update inventory stock.</p>
+</div>
+</div>
+<div class="flex items-center space-x-2 bg-dark-950/80 p-1.5 rounded-2xl border borderwhite/10">
+<button onclick="switchManagementTab('cash')" id="mgmt-tab-cash" class="btn-futuristic
+px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all bg-gradient-to-r from-indigo-600
+to-cyber-600 text-white shadow-md flex items-center space-x-2">
+<i class="fa-solid fa-cash-register"></i>
+<span>Cash Desk</span>
+</button>
+<button onclick="switchManagementTab('stock')" id="mgmt-tab-stock" class="btn-futuristic
+px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all text-slate-400 hover:text-white
+flex items-center space-x-2">
+<i class="fa-solid fa-boxes-stacked"></i>
+<span>Stock Management</span>
+</button>
+<button onclick="navigateTo('code-viewer')" class="btn-futuristic px-4 py-2.5 rounded-xl
+text-xs font-extrabold transition-all text-cyber-400 hover:text-cyber-300 flex items-center
+space-x-2">
+<i class="fa-solid fa-code"></i>
+<span>Java/DBMS Code</span>
+</button>
+</div>
+</div>
+<!-- CASH DESK TAB -->
+<div id="mgmt-section-cash" class="space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+<div class="md:col-span-7 glass-panel p-6 rounded-3xl shadow-xl space-y-4">
+<h3 class="font-extrabold text-white text-sm flex items-center gap-2 tracking-wide">
+<i class="fa-solid fa-magnifying-glass text-cyber-400"></i>
+<span>Search Bill ID for Liquid Cash Collection</span>
+</h3>
+<form onsubmit="handleMgmtBillSearch(event)" class="flex gap-2.5">
+<input type="number" id="mgmt-search-input" placeholder="Enter Bill No (e.g. 101)"
+required
+class="w-full px-4 py-3.5 rounded-2xl bg-dark-900 border border-white/10 focus:bordercyber-500 outline-none font-mono text-sm font-semibold text-white placeholder-slate500">
+<button type="submit" class="btn-futuristic bg-gradient-to-r from-cyber-600 to-indigo-600
+hover:from-cyber-500 hover:to-indigo-500 text-white font-extrabold px-6 py-3.5 rounded-2xl
+text-xs transition-all shadow-lg shadow-cyber-500/20 whitespace-nowrap active:scale-95">
+Lookup Bill
+</button>
+</form>
+</div>
+<div class="md:col-span-5 grid grid-cols-2 gap-4">
+<div class="glass-panel p-5 rounded-3xl shadow-xl">
+<span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest
+block">Pending Cash Bills</span>
+<h4 id="mgmt-stat-pending" class="text-3xl font-extrabold font-mono text-white mt1">0</h4>
+</div>
+<div class="glass-panel p-5 rounded-3xl shadow-xl">
+<span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">Total
+Cash Collected</span>
+<h4 id="mgmt-stat-collected" class="text-3xl font-extrabold font-mono text-emerald-400
+mt-1">₹ 0.00</h4>
+</div>
+</div>
+</div>
+<div id="mgmt-search-result-card" class="hidden p-6 rounded-3xl border transition-all">
+</div>
+<div class="glass-panel rounded-3xl shadow-xl overflow-hidden">
+<div class="p-5 border-b border-white/10 font-extrabold text-sm text-white flex justify-
+between items-center">
+<span>Database Order Transactions</span>
+<span class="text-xs text-slate-400 font-medium">Real-Time Records</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs text-slate-300">
+<thead class="bg-dark-950 uppercase border-b border-white/10 font-bold text-[11px] textslate-400 tracking-wider">
+<tr>
+<th class="py-4 px-6">Bill ID</th>
+<th class="py-4 px-6">Customer</th>
+<th class="py-4 px-6">Order Breakdown</th>
+<th class="py-4 px-6 text-right">Total Amount</th>
+<th class="py-4 px-6 text-center">Status</th>
+<th class="py-4 px-6 text-center">Action</th>
+</tr>
+</thead>
+<tbody id="mgmt-orders-tbody" class="divide-y divide-white/5"></tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- STOCK MANAGEMENT TAB -->
+<div id="mgmt-section-stock" class="space-y-6 hidden">
+<div class="glass-panel rounded-3xl shadow-xl p-6 overflow-hidden space-y-4">
+<div class="flex justify-between items-center">
+<div>
+<h3 class="font-extrabold text-white text-sm">Inventory & Menu Availability</h3>
+<p class="text-xs text-slate-400">Increase stock units or verify available counts.</p>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left text-xs text-slate-300">
+<thead class="bg-dark-950 uppercase border-b border-white/10 font-bold text-[11px] textslate-400 tracking-wider">
+<tr>
+<th class="py-4 px-6">Food Item</th>
+<th class="py-4 px-6">Category</th>
+<th class="py-4 px-6 text-right">Price (₹)</th>
+<th class="py-4 px-6 text-center">Current Stock</th>
+<th class="py-4 px-6 text-center">Availability Status</th>
+<th class="py-4 px-6 text-center">Action</th>
+</tr>
+</thead>
+<tbody id="mgmt-inventory-tbody" class="divide-y divide-white/5"></tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<!-- PAGE 5: CODE VIEWER -->
+<div id="page-code-viewer" class="space-y-6 hidden flex-1 flex flex-col">
+<div class="flex items-center justify-between glass-panel p-6 rounded-3xl border borderwhite/10">
+<div>
+<span class="text-xs font-mono font-bold text-cyber-400 uppercase trackingwidest">Source Code Repository</span>
+<h2 class="text-xl font-extrabold text-white mt-0.5">Java & DBMS Source Code</h2>
+</div>
+<button onclick="navigateTo('management')" class="btn-futuristic bg-dark-800 hover:bgdark-700 text-slate-200 px-5 py-2.5 rounded-2xl text-xs font-extrabold border borderwhite/10">
+Return to Desk
+</button>
+</div>
+<div class="glass-panel rounded-3xl shadow-xl overflow-hidden border border-white/10">
+<div class="flex border-b border-white/10 bg-dark-950 overflow-x-auto">
+<button onclick="switchCodeFile('db')" id="code-tab-db" class="px-6 py-4 text-xs font-bold
+border-b-2 border-cyber-400 text-cyber-400 bg-dark-900">1. SQL Schema (.sql)</button>
+<button onclick="switchCodeFile('models')" id="code-tab-models" class="px-6 py-4 text-xs
+font-bold text-slate-400 hover:text-white">2. Java Models & DAO</button>
+<button onclick="switchCodeFile('servlets')" id="code-tab-servlets" class="px-6 py-4 text-xs
+font-bold text-slate-400 hover:text-white">3. Java Servlets</button>
+</div>
+<div id="code-file-db" class="p-6">
+<pre class="code-block p-5 rounded-2xl text-xs overflow-x-auto custom-scrollbar border
+border-white/10"><code>CREATE DATABASE IF NOT EXISTS canteen_management;
+USE canteen_management;
+CREATE TABLE categories (
+category_id INT PRIMARY KEY AUTO_INCREMENT,
+category_name VARCHAR(80) NOT NULL UNIQUE
+);
+CREATE TABLE food_items (
+food_id INT PRIMARY KEY AUTO_INCREMENT,
+food_name VARCHAR(120) NOT NULL,
+category_id INT,
+price DECIMAL(10,2) NOT NULL,
+stock INT DEFAULT 20,
+availability VARCHAR(20) DEFAULT 'AVAILABLE',
+FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+CREATE TABLE orders (
+order_id INT PRIMARY KEY AUTO_INCREMENT,
+order_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+customer_name VARCHAR(100),
+total_amount DECIMAL(10,2) NOT NULL,
+order_status VARCHAR(20) DEFAULT 'PLACED',
+payment_status VARCHAR(20) DEFAULT 'PENDING_CASH'
+);
+CREATE TABLE order_items (
+order_item_id INT PRIMARY KEY AUTO_INCREMENT,
+order_id INT NOT NULL,
+food_id INT NOT NULL,
+quantity INT NOT NULL,
+unit_price DECIMAL(10,2) NOT NULL,
+subtotal DECIMAL(10,2) NOT NULL,
+FOREIGN KEY (order_id) REFERENCES orders(order_id),
+FOREIGN KEY (food_id) REFERENCES food_items(food_id)
+);</code></pre>
+</div>
+<div id="code-file-models" class="p-6 hidden">
+<pre class="code-block p-5 rounded-2xl text-xs overflow-x-auto custom-scrollbar border
+border-white/10"><code>// OrderDAO.java - JDBC Transaction Implementation
+package com.canteen.dao;
+import com.canteen.model.Order;
+import com.canteen.model.OrderItem;
+import com.canteen.util.DBConnection;
+import java.sql.*;
+public class OrderDAO {
+public int insertOrder(Order order) {
+int generatedOrderId = -1;
+String orderQuery = "INSERT INTO orders (customer_name, total_amount, order_status,
+payment_status) VALUES (?, ?, 'PLACED', 'PENDING_CASH')";
+String itemQuery = "INSERT INTO order_items (order_id, food_id, quantity, unit_price,
+subtotal) VALUES (?, ?, ?, ?, ?)";
+String stockQuery = "UPDATE food_items SET stock = stock - ? WHERE food_id = ?";
+Connection conn = null;
+try {
+conn = DBConnection.getConnection();
+conn.setAutoCommit(false); // Transaction Start
+try (PreparedStatement orderStmt = conn.prepareStatement(orderQuery,
+Statement.RETURN_GENERATED_KEYS)) {
+orderStmt.setString(1, order.getCustomerName());
+orderStmt.setDouble(2, order.getTotalAmount());
+orderStmt.executeUpdate();
+ResultSet rs = orderStmt.getGeneratedKeys();
+if (rs.next()) generatedOrderId = rs.getInt(1);
+}
+if (generatedOrderId != -1) {
+try (PreparedStatement itemStmt = conn.prepareStatement(itemQuery);
+PreparedStatement stockStmt = conn.prepareStatement(stockQuery)) {
+for (OrderItem item : order.getItems()) {
+itemStmt.setInt(1, generatedOrderId);
+itemStmt.setInt(2, item.getFoodId());
+itemStmt.setInt(3, item.getQuantity());
+itemStmt.setDouble(4, item.getUnitPrice());
+itemStmt.setDouble(5, item.getSubtotal());
+itemStmt.addBatch();
+stockStmt.setInt(1, item.getQuantity());
+stockStmt.setInt(2, item.getFoodId());
+stockStmt.addBatch();
+}
+itemStmt.executeBatch();
+stockStmt.executeBatch();
+}
+}
+conn.commit();
+} catch (SQLException e) {
+if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+e.printStackTrace();
+}
+return generatedOrderId;
+}
+}</code></pre>
+</div>
+<div id="code-file-servlets" class="p-6 hidden">
+<pre class="code-block p-5 rounded-2xl text-xs overflow-x-auto custom-scrollbar border
+border-white/10"><code>// CashPaymentServlet.java
+package com.canteen.controller;
+import com.canteen.dao.OrderDAO;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.*;
+import java.io.IOException;
+@WebServlet("/payCash")
+public class CashPaymentServlet extends HttpServlet {
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws
+ServletException, IOException {
+int orderId = Integer.parseInt(request.getParameter("orderId"));
+OrderDAO dao = new OrderDAO();
+boolean success = dao.updateCashPaymentCompleted(orderId);
+if (success) {
+response.sendRedirect("paymentSuccess.jsp?orderId=" + orderId);
+} else {
+response.sendRedirect("payment.jsp?error=InvalidBillNo");
+}
+}
+}</code></pre>
+</div>
+</div>
+</div>
+</main>
+<!-- MODAL RECEIPT VIEW -->
+<div id="bill-modal" class="fixed inset-0 bg-dark-950/80 backdrop-blur-md z-50 flex itemscenter justify-center p-4 hidden">
+<div class="glass-panel rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border
+border-white/20 glow-cyber">
+<div class="bg-dark-950 text-white p-4 flex items-center justify-between border-b borderwhite/10">
+<span class="font-bold text-xs uppercase tracking-widest text-cyber-400">Official Bill
+Receipt</span>
+<button onclick="closeBillModal()" class="text-slate-400 hover:text-white transition-colors">
+<i class="fa-solid fa-xmark text-lg"></i></button>
+</div>
+<div id="printable-bill" class="p-6 space-y-4 text-xs">
+<div class="text-center space-y-1 pb-4 border-b border-dashed border-slate-700">
+<h3 class="font-extrabold text-sm text-white tracking-wide">RAJALAKSHMI ENGINEERING
+COLLEGE</h3>
+<p class="text-[11px] text-slate-400">Canteen Services Desk</p>
+<span class="inline-block bg-amber-500/10 text-amber-400 text-[10px] font-bold px-3.5 py-1
+rounded-full border border-amber-500/30 mt-1">
+<i class="fa-solid fa-money-bill-wave mr-1.5"></i>PAYMENT METHOD: MANUAL LIQUID CASH
+</span>
+</div>
+<div class="grid grid-cols-2 gap-2 bg-dark-900/90 p-3.5 rounded-2xl border borderwhite/10">
+<div>
+<span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider">Bill
+Number</span>
+<span id="modal-bill-id" class="font-mono font-extrabold block text-cyber-400 textbase">#101</span>
+</div>
+<div class="text-right">
+<span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider">Date &
+Time</span>
+<span id="modal-bill-date" class="font-mono text-[11px] block text-slate-300">08-11-
+2026</span>
+</div>
+<div class="col-span-2 pt-1 border-t border-white/10">
+<span class="text-slate-400 text-[9px] uppercase font-bold tracking-wider">Customer
+Name</span>
+<span id="modal-bill-customer" class="font-semibold block text-white">Student</span>
+</div>
+</div>
+<table class="w-full text-xs">
+<thead><tr class="border-b border-white/10 text-slate-400 font-semibold"><th class="textleft py-2">Item</th><th class="text-center py-2">Qty</th><th class="text-right py2">Price</th><th class="text-right py-2">Subtotal</th></tr></thead>
+<tbody id="modal-bill-items" class="divide-y divide-white/5 font-mono text-slate-200">
+</tbody>
+</table>
+<div class="pt-3 border-t border-dashed border-slate-700 flex justify-between fontextrabold text-sm text-white">
+<span>GRAND TOTAL</span>
+<span id="modal-bill-total" class="font-mono text-cyber-400 text-lg">₹ 0.00</span>
+</div>
+<div class="bg-amber-500/10 border border-amber-500/30 p-3.5 rounded-2xl text-center
+space-y-1">
+<span class="text-[10px] uppercase font-bold text-amber-400 block tracking-widest">Status:
+PENDING CASH PAYMENT</span>
+<p class="text-[11px] text-amber-200 font-medium">
+Please provide Bill Number <b id="modal-bill-id-highlight" class="font-mono textwhite">#101</b> to the Canteen Cash Counter to pay with liquid cash.
+</p>
+</div>
+</div>
+<div class="bg-dark-950 p-4 border-t border-white/10">
+<button onclick="closeBillModal()" class="btn-futuristic w-full bg-gradient-to-r from-cyber600 to-indigo-600 hover:from-cyber-500 hover:to-indigo-500 text-white font-extrabold py-3
+rounded-2xl text-xs transition-all shadow-lg active:scale-95 border border-white/20">
+Done & Return to Menu
+</button>
+</div>
+</div>
+</div>
+<!-- SCRIPT APPLICATION STATE ENGINE -->
+<script>
+const EXPANDED_DEFAULT_MENU = [
+{ id: 1, name: 'Idli (2 Pcs)', category: 'Breakfast', price: 30.00, stock: 25, icon: 'fa-bread-slice' },
+{ id: 2, name: 'Crispy Dosa', category: 'Breakfast', price: 50.00, stock: 20, icon: 'fa-stroopwafel'
+},
+{ id: 3, name: 'Ven Pongal with Vada', category: 'Breakfast', price: 50.00, stock: 15, icon: 'fabowl-food' },
+{ id: 4, name: 'Veg Meals', category: 'Meals', price: 90.00, stock: 15, icon: 'fa-bowl-rice' },
+{ id: 5, name: 'Chole Bhature', category: 'Meals', price: 80.00, stock: 12, icon: 'fa-plate-wheat' },
+{ id: 6, name: 'Paneer Roll', category: 'Meals', price: 60.00, stock: 18, icon: 'fa-scroll' },
+{ id: 7, name: 'Hot Samosa (2 Pcs)', category: 'Snacks', price: 20.00, stock: 30, icon: 'fa-cookie' },
+{ id: 8, name: 'Samosa Chat', category: 'Snacks', price: 35.00, stock: 20, icon: 'fa-utensils' },
+{ id: 9, name: 'Cheese Maggi', category: 'Snacks', price: 45.00, stock: 25, icon: 'fa-bowl-food' },
+{ id: 10, name: 'Veg Supreme Burger', category: 'Snacks', price: 70.00, stock: 15, icon: 'faburger' },
+{ id: 11, name: 'Masala Tea', category: 'Beverages', price: 20.00, stock: 50, icon: 'fa-mug-hot' },
+{ id: 12, name: 'Fresh Lemon Soda', category: 'Beverages', price: 25.00, stock: 40, icon: 'faglass-water' },
+{ id: 13, name: 'Cold Coffee with Ice Cream', category: 'Beverages', price: 60.00, stock: 20,
+icon: 'fa-wine-glass' },
+{ id: 14, name: 'Vanilla Ice Cream Scoop', category: 'Beverages', price: 40.00, stock: 25, icon:
+'fa-ice-cream' },
+{ id: 15, name: 'Chocolate Sundae', category: 'Beverages', price: 65.00, stock: 15, icon: 'fa-icecream' }
+];
+let currentUser = null;
+let menuDatabase = [];
+let ordersDatabase = [];
+let studentCart = {};
+let currentStudentCategory = 'All';
+let autoBillSeq = 101;
+window.addEventListener('DOMContentLoaded', () => {
+loadFromLocalStorage();
+const savedUser = localStorage.getItem('rec_canteen_session');
+if (savedUser) {
+currentUser = JSON.parse(savedUser);
+applyUserSessionUI();
+} else {
+navigateTo('login');
+}
+});
+function loadFromLocalStorage() {
+const storedMenu = localStorage.getItem('rec_canteen_menu');
+const storedOrders = localStorage.getItem('rec_canteen_orders');
+const storedSeq = localStorage.getItem('rec_canteen_bill_seq');
+menuDatabase = storedMenu ? JSON.parse(storedMenu) : EXPANDED_DEFAULT_MENU;
+ordersDatabase = storedOrders ? JSON.parse(storedOrders) : [];
+autoBillSeq = storedSeq ? parseInt(storedSeq) : 101;
+}
+function saveToLocalStorage() {
+localStorage.setItem('rec_canteen_menu', JSON.stringify(menuDatabase));
+localStorage.setItem('rec_canteen_orders', JSON.stringify(ordersDatabase));
+localStorage.setItem('rec_canteen_bill_seq', autoBillSeq.toString());
+}
+function navigateTo(pageName) {
+['login', 'student-menu', 'student-history', 'management', 'code-viewer'].forEach(p => {
+const el = document.getElementById(`page-${p}`);
+if (el) el.classList.add('hidden');
+});
+const target = document.getElementById(`page-${pageName}`);
+if (target) target.classList.remove('hidden');
+if (pageName === 'student-menu') {
+renderStudentCategories();
+renderStudentMenu();
+renderStudentCart();
+} else if (pageName === 'student-history') {
+renderStudentHistory();
+} else if (pageName === 'management') {
+switchManagementTab('cash');
+}
+}
+function switchLoginTab(tab) {
+document.getElementById('login-tab-student').className = tab === 'student' ? "flex-1 py-3
+rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-cyber-600 to-cyber-500
+text-white shadow-lg shadow-cyber-500/20 flex items-center justify-center space-x-2" : "flex1 py-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:text-white flex itemscenter justify-center space-x-2";
+document.getElementById('login-tab-management').className = tab === 'management' ?
+"flex-1 py-3 rounded-xl text-xs font-bold transition-all bg-gradient-to-r from-indigo-600 tocyber-600 text-white shadow-lg shadow-indigo-500/20 flex items-center justify-center
+space-x-2" : "flex-1 py-3 rounded-xl text-xs font-bold transition-all text-slate-400 hover:textwhite flex items-center justify-center space-x-2";
+if (tab === 'student') {
+document.getElementById('form-login-student').classList.remove('hidden');
+document.getElementById('form-login-management').classList.add('hidden');
+} else {
+document.getElementById('form-login-management').classList.remove('hidden');
+document.getElementById('form-login-student').classList.add('hidden');
+}
+}
+function handleStudentLogin(e) {
+e.preventDefault();
+const emailInput = document.getElementById('student-login-
+email').value.trim().toLowerCase();
+const errorBox = document.getElementById('student-login-error');
+const errorMsg = document.getElementById('student-login-error-msg');
+// Institutional Email Validation Check - accepts any email prefix ending with
+@rajalakshmi.edu.in
+if (!emailInput.endsWith('@rajalakshmi.edu.in') || emailInput.length <=
+'@rajalakshmi.edu.in'.length) {
+errorMsg.innerText = 'Invalid login! Email must end with @rajalakshmi.edu.in';
+errorBox.classList.remove('hidden');
+errorBox.classList.add('flex');
+return;
+}
+errorBox.classList.add('hidden');
+errorBox.classList.remove('flex');
+// Format username from email prefix (e.g., "john.2023.cse@rajalakshmi.edu.in" -> "JOHN
+2023 CSE")
+const studentName = emailInput.split('@')[0].replace(/\./g, ' ').toUpperCase();
+currentUser = { email: emailInput, name: studentName, role: 'student' };
+localStorage.setItem('rec_canteen_session', JSON.stringify(currentUser));
+applyUserSessionUI();
+}
+function handleManagementLogin(e) {
+e.preventDefault();
+const username = document.getElementById('mgmt-username').value.trim();
+const pin = document.getElementById('mgmt-password').value.trim();
+if (username === 'admin' && pin === '1234') {
+currentUser = { name: 'Canteen Manager', role: 'management' };
+localStorage.setItem('rec_canteen_session', JSON.stringify(currentUser));
+applyUserSessionUI();
+} else alert('Invalid PIN. Default PIN: 1234');
+}
+function logoutSession() {
+currentUser = null;
+localStorage.removeItem('rec_canteen_session');
+studentCart = {};
+document.getElementById('session-header-info').classList.add('hidden');
+navigateTo('login');
+}
+function applyUserSessionUI() {
+document.getElementById('session-user-name').innerText = currentUser.name;
+document.getElementById('session-header-info').classList.remove('hidden');
+document.getElementById('session-header-info').classList.add('flex');
+if (currentUser.role === 'student') navigateTo('student-menu');
+else navigateTo('management');
+}
+function renderStudentCategories() {
+const categories = ['All', 'Breakfast', 'Meals', 'Snacks', 'Beverages'];
+document.getElementById('student-category-filters').innerHTML = categories.map(cat => `
+<button onclick="setStudentCategory('${cat}')" class="btn-futuristic px-4 py-2 rounded-xl
+text-xs font-extrabold whitespace-nowrap transition-all ${currentStudentCategory === cat ?
+'bg-gradient-to-r from-cyber-600 to-cyber-500 text-white shadow-md shadow-cyber500/20 border border-white/20' : 'bg-dark-900/80 text-slate-400 border border-white/5
+hover:text-white hover:border-white/20'}">${cat}</button>
+`).join('');
+}
+function setStudentCategory(cat) {
+currentStudentCategory = cat;
+renderStudentCategories();
+renderStudentMenu();
+}
+function renderStudentMenu() {
+const grid = document.getElementById('student-menu-grid');
+const filtered = currentStudentCategory === 'All' ? menuDatabase : menuDatabase.filter(i =>
+i.category === currentStudentCategory);
+document.getElementById('student-menu-count').innerText = `${filtered.length} Items`;
+grid.innerHTML = filtered.map(item => {
+const qty = studentCart[item.id] || 0;
+const isOutOfStock = item.stock <= 0;
+return `
+<div class="glass-card p-4.5 rounded-3xl border ${isOutOfStock ? 'border-rose-500/30 bgrose-950/10' : 'border-white/10 hover:border-cyber-500/40'} shadow-xl flex flex-col justifybetween transition-all group">
+<div>
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-bold uppercase tracking-widest text-cyber-400 bg-cyber-
+500/10 px-2 py-0.5 rounded-full border border-cyber-500/20">${item.category}</span>
+<i class="fa-solid ${item.icon || 'fa-utensils'} text-slate-500 group-hover:text-cyber-400
+transition-colors"></i>
+</div>
+<h3 class="font-extrabold text-white text-sm leading-snug mt-2">${item.name}</h3>
+<div class="flex items-center space-x-2 mt-2">
+<span class="text-sm font-bold font-mono text-cyber-400">₹ ${item.price.toFixed(2)}</span>
+<span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${isOutOfStock ? 'bg-rose500/20 text-rose-300 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-300
+border border-emerald-500/30'}">
+${isOutOfStock ? 'Out of Stock' : `Stock: ${item.stock}`}
+</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+<span class="text-[11px] font-medium text-slate-400">Quantity</span>
+${isOutOfStock ? `<span class="text-xs font-bold text-rose-400">Unavailable</span>` : `
+<div class="flex items-center space-x-2 bg-dark-950/90 p-1.5 rounded-2xl border borderwhite/10">
+<button onclick="updateStudentCart(${item.id}, -1)" ${qty === 0 ? 'disabled' : ''} class="w-7 h7 rounded-xl bg-dark-800 text-white font-extrabold text-xs shadow-md disabled:opacity-30
+hover:bg-dark-700 transition-colors active:scale-90">-</button>
+<span class="w-6 text-center font-mono font-bold text-xs text-white">${qty}</span>
+<button onclick="updateStudentCart(${item.id}, 1)" ${qty >= item.stock ? 'disabled' : ''}
+class="w-7 h-7 rounded-xl bg-gradient-to-r from-cyber-600 to-cyber-500 text-white fontextrabold text-xs shadow-md shadow-cyber-500/20 disabled:opacity-30 hover:from-cyber500 hover:to-cyber-400 transition-colors active:scale-90">+</button>
+</div>
+`}
+</div>
+</div>
+`;
+}).join('');
+}
+function updateStudentCart(foodId, change) {
+const item = menuDatabase.find(i => i.id === foodId);
+const current = studentCart[foodId] || 0;
+const updated = current + change;
+if (updated > item.stock) return alert(`Stock limit reached (${item.stock})`);
+if (updated <= 0) delete studentCart[foodId];
+else studentCart[foodId] = updated;
+renderStudentMenu();
+renderStudentCart();
+}
+function clearStudentCart() {
+studentCart = {};
+renderStudentMenu();
+renderStudentCart();
+}
+function renderStudentCart() {
+const container = document.getElementById('student-cart-items');
+const entries = Object.entries(studentCart);
+if (entries.length === 0) {
+container.innerHTML = `<div class="text-center py-12 text-slate-500 text-xs fontmedium">Cart is empty. Select items from menu.</div>`;
+document.getElementById('student-cart-subtotal').innerText = '₹ 0.00';
+document.getElementById('student-cart-total').innerText = '₹ 0.00';
+document.getElementById('btn-place-order').disabled = true;
+return;
+}
+let total = 0;
+container.innerHTML = entries.map(([idStr, qty]) => {
+const item = menuDatabase.find(i => i.id === parseInt(idStr));
+const subtotal = item.price * qty;
+total += subtotal;
+return `
+<div class="flex items-center justify-between p-3 bg-dark-900/80 rounded-2xl border
+border-white/5 text-xs">
+<div>
+<h4 class="font-bold text-white">${item.name}</h4>
+<span class="text-[10px] text-slate-400">₹${item.price} × ${qty}</span>
+</div>
+<span class="font-mono font-bold text-cyber-400">₹${subtotal.toFixed(2)}</span>
+</div>
+`;
+}).join('');
+document.getElementById('student-cart-subtotal').innerText = `₹ ${total.toFixed(2)}`;
+document.getElementById('student-cart-total').innerText = `₹ ${total.toFixed(2)}`;
+document.getElementById('btn-place-order').disabled = false;
+}
+function placeStudentOrder() {
+const entries = Object.entries(studentCart);
+let totalAmount = 0;
+const orderItems = [];
+for (let [idStr, qty] of entries) {
+const item = menuDatabase.find(i => i.id === parseInt(idStr));
+item.stock -= qty;
+const subtotal = item.price * qty;
+totalAmount += subtotal;
+orderItems.push({ foodId: item.id, name: item.name, qty: qty, unitPrice: item.price, subtotal:
+subtotal });
+}
+const newOrder = {
+orderId: autoBillSeq++,
+customerName: currentUser.name,
+customerEmail: currentUser.email || 'N/A',
+dateTime: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + new
+Date().toLocaleDateString(),
+items: orderItems,
+totalAmount: totalAmount,
+paymentStatus: 'PENDING_CASH',
+paidAt: null
+};
+ordersDatabase.unshift(newOrder);
+saveToLocalStorage();
+studentCart = {};
+renderStudentMenu();
+renderStudentCart();
+showBillReceiptModal(newOrder);
+}
+function showBillReceiptModal(order) {
+document.getElementById('modal-bill-id').innerText = `#${order.orderId}`;
+document.getElementById('modal-bill-id-highlight').innerText = `#${order.orderId}`;
+document.getElementById('modal-bill-date').innerText = order.dateTime;
+document.getElementById('modal-bill-customer').innerText = order.customerName;
+document.getElementById('modal-bill-total').innerText = `₹ ${order.totalAmount.toFixed(2)}`;
+document.getElementById('modal-bill-items').innerHTML = order.items.map(i => `
+<tr class="border-b border-white/5">
+<td class="py-2 text-slate-200 font-medium">${i.name}</td>
+<td class="text-center py-2 text-slate-400">${i.qty}</td>
+<td class="text-right py-2 text-slate-400">₹${i.unitPrice}</td>
+<td class="text-right py-2 font-bold text-white">₹${i.subtotal.toFixed(2)}</td>
+</tr>
+`).join('');
+document.getElementById('bill-modal').classList.remove('hidden');
+}
+function closeBillModal() {
+document.getElementById('bill-modal').classList.add('hidden');
+}
+function renderStudentHistory() {
+const container = document.getElementById('student-history-container');
+const myOrders = ordersDatabase.filter(o => o.customerName === currentUser.name);
+if (myOrders.length === 0) {
+container.innerHTML = `<p class="text-xs text-slate-500 text-center py-12 font-medium">No
+order history available.</p>`;
+return;
+}
+container.innerHTML = myOrders.map(o => {
+const isPaid = o.paymentStatus === 'PAID_CASH';
+return `
+<div class="p-5 rounded-3xl border ${isPaid ? 'bg-emerald-950/20 border-emerald-500/30' :
+'bg-dark-900/80 border-white/10'} text-xs space-y-3 shadow-lg">
+<div class="flex justify-between items-center font-bold">
+<span class="text-sm font-mono text-white">Bill #${o.orderId}</span>
+<span class="px-3.5 py-1 rounded-full text-[10px] font-extrabold tracking-wider ${isPaid ? 'bgemerald-500/20 text-emerald-400 border border-emerald-500/40 glow-emerald' : 'bgamber-500/20 text-amber-400 border border-amber-500/40'}">
+${isPaid ? 'PAID CASH' : 'PENDING CASH'}
+</span>
+</div>
+<div class="text-slate-300 font-medium">
+${o.items.map(i => `${i.name} (×${i.qty})`).join(', ')}
+</div>
+<div class="pt-3 border-t border-white/5 flex justify-between items-center text-slate-400">
+<span>Placed: ${o.dateTime}</span>
+<span class="font-mono font-bold text-cyber-400 text-base">Total: ₹
+${o.totalAmount.toFixed(2)}</span>
+</div>
+${isPaid ? `
+<div class="bg-emerald-500/10 border border-emerald-500/30 p-2.5 rounded-2xl textemerald-300 text-[11px] font-semibold flex items-center gap-2">
+<i class="fa-solid fa-circle-check text-emerald-400"></i>
+<span>Paid at Cash Counter Desk on ${o.paidAt || 'Counter Desk'}</span>
+</div>
+` : ''}
+</div>
+`;
+}).join('');
+}
+function switchManagementTab(tab) {
+document.getElementById('mgmt-tab-cash').className = tab === 'cash' ? "btn-futuristic px-4
+py-2.5 rounded-xl text-xs font-extrabold transition-all bg-gradient-to-r from-indigo-600 tocyber-600 text-white shadow-md flex items-center space-x-2" : "btn-futuristic px-4 py-2.5
+rounded-xl text-xs font-extrabold transition-all text-slate-400 hover:text-white flex itemscenter space-x-2";
+document.getElementById('mgmt-tab-stock').className = tab === 'stock' ? "btn-futuristic
+px-4 py-2.5 rounded-xl text-xs font-extrabold transition-all bg-gradient-to-r from-indigo-600
+to-cyber-600 text-white shadow-md flex items-center space-x-2" : "btn-futuristic px-4 py-2.5
+rounded-xl text-xs font-extrabold transition-all text-slate-400 hover:text-white flex itemscenter space-x-2";
+if (tab === 'cash') {
+document.getElementById('mgmt-section-cash').classList.remove('hidden');
+document.getElementById('mgmt-section-stock').classList.add('hidden');
+renderManagementOrdersTable();
+updateManagementStats();
+} else {
+document.getElementById('mgmt-section-stock').classList.remove('hidden');
+document.getElementById('mgmt-section-cash').classList.add('hidden');
+renderManagementInventory();
+}
+}
+function handleMgmtBillSearch(e) {
+if (e && e.preventDefault) e.preventDefault();
+const val = parseInt(document.getElementById('mgmt-search-input').value);
+const order = ordersDatabase.find(o => o.orderId === val);
+const card = document.getElementById('mgmt-search-result-card');
+if (!order) {
+card.classList.remove('hidden');
+card.className = "p-4 bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs
+text-center font-bold rounded-3xl";
+card.innerHTML = "Bill ID Not Found in Database Records";
+return;
+}
+card.classList.remove('hidden');
+const isPaid = order.paymentStatus === 'PAID_CASH';
+card.className = `p-6 rounded-3xl border text-xs space-y-3 ${isPaid ? 'bg-emerald-950/20
+border-emerald-500/30' : 'bg-amber-500/10 border-amber-500/30'}`;
+card.innerHTML = `
+<div class="flex justify-between items-center font-extrabold text-white text-base">
+<span>Bill #${order.orderId} - ${order.customerName}</span>
+<span class="font-mono text-cyber-400">₹${order.totalAmount.toFixed(2)}</span>
+</div>
+<div class="text-slate-300 font-medium">Items: ${order.items.map(i => `${i.name}
+(×${i.qty})`).join(', ')}</div>
+${!isPaid ? `
+<button onclick="mgmtConfirmCash(${order.orderId})" class="btn-futuristic bg-gradient-to-r
+from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white fontextrabold px-5 py-2.5 rounded-2xl text-xs transition-all shadow-lg shadow-emerald-500/20
+active:scale-95 border border-white/10">
+Confirm Cash Payment Received
+</button>
+` : `<span class="text-emerald-400 font-bold block bg-emerald-500/10 border borderemerald-500/30 p-2.5 rounded-2xl text-center"><i class="fa-solid fa-circle-check mr-2">
+</i>PAID CASH</span>`}
+`;
+}
+function mgmtConfirmCash(billId) {
+const order = ordersDatabase.find(o => o.orderId === billId);
+if (order) {
+order.paymentStatus = 'PAID_CASH';
+order.paidAt = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ', ' + new
+Date().toLocaleDateString();
+saveToLocalStorage();
+renderManagementOrdersTable();
+updateManagementStats();
+handleMgmtBillSearch(null);
+}
+}
+function renderManagementOrdersTable() {
+const tbody = document.getElementById('mgmt-orders-tbody');
+tbody.innerHTML = ordersDatabase.map(o => {
+const isPaid = o.paymentStatus === 'PAID_CASH';
+return `
+<tr class="hover:bg-white/5 border-b border-white/5 transition-colors">
+<td class="py-4 px-6 font-mono font-bold text-cyber-400">#${o.orderId}</td>
+<td class="py-4 px-6 font-semibold text-white">${o.customerName}</td>
+<td class="py-4 px-6 text-slate-300">${o.items.map(i => `${i.name} (×${i.qty})`).join(', ')}</td>
+<td class="py-4 px-6 text-right font-mono font-bold text-white">₹${o.totalAmount.toFixed(2)}
+</td>
+<td class="py-4 px-6 text-center font-bold ${isPaid ? 'text-emerald-400' : 'text-amber400'}">${o.paymentStatus}</td>
+<td class="py-4 px-6 text-center">
+${!isPaid ? `<button onclick="mgmtConfirmCash(${o.orderId})" class="btn-futuristic bggradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500
+text-white font-extrabold px-3 py-1.5 rounded-xl text-[11px] shadow-sm border borderwhite/10">Mark Paid</button>` : `<span class="text-slate-500 fontmedium">Completed</span>`}
+</td>
+</tr>
+`;
+}).join('');
+}
+function updateManagementStats() {
+const pending = ordersDatabase.filter(o => o.paymentStatus === 'PENDING_CASH').length;
+const collected = ordersDatabase.filter(o => o.paymentStatus === 'PAID_CASH').reduce((sum,
+o) => sum + o.totalAmount, 0);
+document.getElementById('mgmt-stat-pending').innerText = pending.toString();
+document.getElementById('mgmt-stat-collected').innerText = `₹ ${collected.toFixed(2)}`;
+}
+function renderManagementInventory() {
+document.getElementById('mgmt-inventory-tbody').innerHTML = menuDatabase.map(item
+=> `
+<tr class="hover:bg-white/5 border-b border-white/5 transition-colors">
+<td class="py-4 px-6 font-extrabold text-white">${item.name}</td>
+<td class="py-4 px-6 text-slate-300">${item.category}</td>
+<td class="py-4 px-6 text-right font-mono font-bold text-cyber-400">₹
+${item.price.toFixed(2)}</td>
+<td class="py-4 px-6 text-center font-mono font-bold text-white">${item.stock}</td>
+<td class="py-4 px-6 text-center">
+<span class="px-3 py-1 rounded-full text-[10px] font-bold ${item.stock > 0 ? 'bg-emerald500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400
+border border-rose-500/30'}">
+${item.stock > 0 ? 'AVAILABLE' : 'OUT OF STOCK'}
+</span>
+</td>
+<td class="py-4 px-6 text-center">
+<button onclick="addStock(${item.id})" class="btn-futuristic bg-dark-800 hover:bg-dark-700
+text-slate-200 font-bold px-3 py-1.5 rounded-xl text-xs border border-white/10 active:scale90">+5 Stock</button>
+</td>
+</tr>
+`).join('');
+}
+function addStock(foodId) {
+const item = menuDatabase.find(i => i.id === foodId);
+if (item) {
+item.stock += 5;
+saveToLocalStorage();
+renderManagementInventory();
+}
+}
+function switchCodeFile(fileKey) {
+['db', 'models', 'servlets'].forEach(key => {
+document.getElementById(`code-file-${key}`).classList.add('hidden');
+document.getElementById(`code-tab-${key}`).className = "px-6 py-4 text-xs font-bold textslate-400 hover:text-white";
+});
+document.getElementById(`code-file-${fileKey}`).classList.remove('hidden');
+document.getElementById(`code-tab-${fileKey}`).className = "px-6 py-4 text-xs font-bold
+border-b-2 border-cyber-400 text-cyber-400 bg-dark-900";
+}
+</script>
+</body>
+</html>
